@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.AplProcedureDao">
+<!-- 修改流程信息   -->
+    <update id="updateAplProcedure" parameterType="AplProcedure">
+        update apl_procedure
+        <set>
+            <if test="pro_name != null and pro_name != ''">
+                pro_name = #{pro_name},
+            </if>
+            <if test="pro_form_name != null and pro_form_name != ''">
+                pro_form_name = #{pro_form_name},
+            </if>
+        </set>
+        where pro_no = #{pro_no}
+    </update>
+<!--  添加流程  -->
+    <insert id="insertAplProcedure" parameterType="AplProcedure">
+        insert into apl_procedure(pro_name, pro_form_name) values(#{pro_name}, #{pro_form_name})
+    </insert>
+<!--  删除流程  -->
+    <delete id="deleteAplProcedure" parameterType="Integer">
+        delete from apl_procedure where pro_no = #{pro_no}
+    </delete>
+<!--  查询流程  -->
+    <select id="selectAplProcedureByNoOrNameOrFormName" resultMap="aplProcedureWithPlaceAndPosition" parameterType="AplProcedure">
+       select a.*, p.position_no, p.position_name, p.pro_order, p1.place_no, p1.place_name from apl_procedure a left join position_msg p on a.pro_no = p.pro_no
+        left join place_msg p1 on a.pro_no = p1.pro_no
+        <where>
+            <choose>
+                <when test="pro_no != null">
+                    pro_no = #{pro_no}
+                </when>
+                <when test="pro_name != null">
+                    pro_name = #{pro_name}
+                </when>
+                <otherwise>
+                    pro_form_name = #{pro_form_name}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <resultMap id="aplProcedureWithPlaceAndPosition" type="AplProcedure">
+        <id property="pro_no" column="pro_no"></id>
+        <result property="pro_name" column="pro_name"></result>
+        <result property="pro_form_name" column="pro_form_name"></result>
+        <collection property="places"  column="place_no" ofType="Place">
+            <id property="place_no" column="place_no"></id>
+            <result property="place_name" column="place_name"></result>
+        </collection>
+        <collection property="positions" column="position_no" ofType="Position">
+            <id property="position_no" column="position_no"></id>
+            <result property="position_name" column="position_name"></result>
+            <result property="pro_order" column="pro_order"></result>
+        </collection>
+    </resultMap>
+
+<!--  查询所有流程  -->
+    <select id="selectAllAplProcedures"  resultMap="aplProcedureWithPlaceAndPosition">
+        select a.*, p.position_no, p.position_name, p.pro_order, p1.place_no, p1.place_name from apl_procedure a left join position_msg p on a.pro_no = p.pro_no
+                                                                                                                 left join place_msg p1 on a.pro_no = p1.pro_no
+    </select>
+</mapper>

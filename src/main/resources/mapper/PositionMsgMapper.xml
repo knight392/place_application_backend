@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.PositionDao">
+    <!--  更新职位信息  -->
+    <update id="updatePosition" parameterType="Position">
+        update position_msg
+        <set>
+            <if test="position_name != null">
+                position_name = #{position_name},
+            </if>
+            <if test="position_info != null">
+                position_info = #{position_info},
+            </if>
+            <if test="teacher != null and teacher.teacher_no != null and teacher.teacher_no != ''">
+                teacher_no = #{teacher.teacher_no},
+            </if>
+            <if test=" pro_order != null">
+                pro_order = #{pro_order},
+            </if>
+            <if test="aplProcedure != null and aplProcedure.pro_no != null and aplProcedure.pro_no != ''" >
+                pro_no = #{aplProcedure.pro_no},
+            </if>
+        </set>
+        where position_no = #{position_no}
+    </update>
+
+    <!--  添加职位  -->
+    <insert id="insertPosition" parameterType="Position">
+        insert into position_msg(position_name,position_info) values(#{position_name},#{position_info})
+    </insert>
+
+    <!--  删除职位  -->
+    <delete id="deletePosition" parameterType="Integer">
+        delete from position_msg where position_no = #{position_no}
+    </delete>
+
+    <!--  查询职位  -->
+    <select id="selectPositionByNoOrName" parameterType="Position" resultMap="PositionWithTeacherAndProcedure">
+        select p.*, t.teacher_name, a.pro_name from position_msg p
+        left join teacher t on p.teacher_no=t.teacher_no
+        left join apl_procedure a on p.pro_no = a.pro_no
+        <where>
+            <choose>
+                <when test="position_no != null">
+                    position_no = #{position_no}
+                </when>
+                <otherwise>
+                    position_name = #{position_name}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <resultMap id="PositionWithTeacherAndProcedure" type="Position">
+        <id property="position_no" column="position_no"></id>
+        <result property="position_name" column="position_name"></result>
+        <result property="position_info" column="position_info"></result>
+        <result property="pro_order" column="pro_order"></result>
+        <association property="teacher" column="teacher_no" javaType="Teacher">
+            <id property="teacher_no" column="teacher_no"></id>
+            <result property="teacher_name" column="teacher_name"></result>
+        </association>
+        <association property="aplProcedure" column="pro_no" javaType="AplProcedure">
+            <id property="pro_no" column="pro_no"></id>
+            <result property="pro_name" column="pro_name"></result>
+        </association>
+    </resultMap>
+
+    <!--  查询所有职位  -->
+    <select id="selectAllPositions" resultMap="PositionWithTeacherAndProcedure">
+        select p.*, t.teacher_name, a.pro_name from position_msg p
+                                                        left join teacher t on p.teacher_no=t.teacher_no
+                                                        left join apl_procedure a on p.pro_no = a.pro_no
+    </select>
+
+    <!--  根据pro_no 查询所有的职位，并且按照pro_order从小到大排列  -->
+    <select id = "selectPositionsByPro_no" resultType="Integer" resultMap="PositionWithTeacherAndProcedure">
+        select distinct * from (select p.*, t.teacher_name from position_msg p left join teacher t on p.teacher_no=t.teacher_no) as t1, (select a.pro_name from position_msg p left join apl_procedure a on p.pro_no = a.pro_no) as t2
+        where t1.pro_no = #{pro_no} order by pro_order asc
+    </select>
+
+    <!-- 根据pro_no 清空 pro_no，批量清除流程中的所属场地  -->
+    <update id="clearPro_noAndPro_orderByPro_no" parameterType="Integer">
+        update position_msg set pro_no = null, pro_order = null where pro_no = #{pro_no}
+    </update>
+
+    <!-- 根据position_no,找出pro_order 大的 并 pro_no相同的 记录   -->
+    <select id="selectPositionsByNoAndPro_noAndPro_order" parameterType="Integer" resultType="Integer">
+        select position_no from position_msg where pro_no =( select pro_no from position_msg WHERE position_no = #{position_no}) AND
+                pro_order > ( select pro_order from position_msg WHERE position_no = #{position_no})
+    </select>
+
+    <!--  根据position_no 将 pro_order -1  -->
+    <update id="reduceOrderByNos" parameterType="List">
+        update position_msg set pro_order = pro_order - 1
+        where position_no in
+        <foreach collection="nos" item="no" open="(" separator="," close=")">
+            #{no}
+        </foreach>
+    </update>
+
+    <!--  根据 position_no 删除 pro_no 和 pro_order  -->
+    <update id="clearProcedureByNo" parameterType="Integer">
+        update position_msg set pro_order = null, pro_no = null
+        where position_no = #{position_no}
+    </update>
+
+    <!--  根据 position_no 删除 teacher_no  -->
+    <update id="clearTeacherByNo" parameterType="Integer">
+        update position_msg set teacher_no = null
+        where position_no = #{position_no}
+    </update>
+
+    <!-- 获取流程为空的职位    -->
+    <select id="selectPositionsWithoutProcedure" resultType="Position">
+        select * from position_msg where pro_no is null
+    </select>
+</mapper>

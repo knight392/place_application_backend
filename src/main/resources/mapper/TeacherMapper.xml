@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.TeacherDao">
+<!--  插入教师  -->
+    <insert id="insertTeacher" parameterType="Teacher">
+        insert into teacher(teacher_no,teacher_password,teacher_name) values(#{teacher_no},#{teacher_password},#{teacher_name})
+    </insert>
+<!--  删除教师  -->
+    <delete id="deleteTeacher" parameterType="String">
+        delete from teacher where teacher_no = #{teacher_no}
+    </delete>
+<!--  更新教师信息  -->
+    <update id="updateTeacher" parameterType="Teacher">
+        update teacher
+        <set>
+            <if test="teacher_name != null and teacher_password != ''">
+                teacher_name = #{teacher_name},
+            </if>
+            <if test="teacher_password != null and teacher_password != ''">
+                teacher_password = #{teacher_password},
+            </if>
+        </set>
+        where teacher_no = #{teacher_no}
+    </update>
+
+<!--  根据账号查询教师信息  -->
+    <select id="selectTeacherByNo" parameterType="String" resultMap="TeacherWithPosition">
+       select * from (select t.*, p.position_name, p.position_info from teacher as t left join position_msg as p on t.teacher_no = p.teacher_no) as tb
+        where tb.teacher_no = #{teacher_no}
+    </select>
+    <resultMap id="TeacherWithPosition" type="Teacher">
+<!--    这里的属性必须要配置，省略了直接设置为null    -->
+        <id property="teacher_no" column="teacher_no"></id>
+        <result property="teacher_name" column="teacher_name"></result>
+        <result property="teacher_password" column="teacher_password"></result>
+        <collection property="positions" column="position_no" ofType="Position">
+            <result property="position_name" column="position_name"></result>
+            <result property="position_info" column="position_info"></result>
+        </collection>
+    </resultMap>
+
+<!--  获取所有教师  -->
+    <select id="getAllTeachers" resultMap="TeacherWithPosition">
+        select * from teacher t left join position_msg p on t.teacher_no = p.teacher_no
+    </select>
+</mapper>

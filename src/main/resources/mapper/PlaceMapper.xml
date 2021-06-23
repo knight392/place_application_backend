@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.PlaceDao">
+    <!--  更新场地信息  -->
+    <update id="updatePlace" parameterType="Place">
+        update place_msg
+        <set>
+            <if test="place_name != null and place_name != null">
+                place_name = #{place_name},
+            </if>
+            <if test="place_info != null and place_info != ''">
+                place_info = #{place_info},
+            </if>
+            <if test="aplProcedure != null and  aplProcedure.pro_no != null and aplProcedure.pro_no != ''">
+                pro_no = #{aplProcedure.pro_no},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+        </set>
+        where place_no = #{place_no}
+    </update>
+
+    <!--  添加场地  -->
+    <insert id="insertPlace" parameterType="Place">
+        insert into place_msg(place_name, place_info) values(#{place_name}, #{place_info})
+    </insert>
+
+    <!--  删除场地  -->
+    <delete id="deletePlace" parameterType="Integer">
+        delete from place_msg where place_no = #{place_no}
+    </delete>
+
+    <!--  查询场地  -->
+    <select id="selectPlaceByNoOrName" parameterType="Place" resultMap="placeWithAplProcedure">
+        select p.*, a.pro_name from place_msg p left join apl_procedure a on p.pro_no = a.pro_no
+        <where>
+            <choose>
+                <when test="place_no != null">
+                    and place_no = #{place_no}
+                </when>
+                <otherwise>
+                    and place_name = #{place_name}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <resultMap id="placeWithAplProcedure" type="Place">
+        <id property="place_no" column="place_no"></id>
+        <result property="place_name" column="place_name"></result>
+        <result property="place_info" column="place_info"></result>
+        <association property="aplProcedure" column="pro_no">
+            <id property="pro_no" column="pro_no"></id>
+            <result property="pro_name" column="pro_name"></result>
+        </association>
+    </resultMap>
+
+    <!--  查询所有的场地  -->
+    <select id="selectAllPlaces" resultMap="placeWithAplProcedure">
+        select p.*, a.pro_name from place_msg p left join apl_procedure a on p.pro_no = a.pro_no
+    </select>
+
+    <!-- 根据pro_no 清空 pro_no，批量清除流程中的所属场地 -->
+    <update id="clearPro_noByPro_no" parameterType="Integer">
+        update place_msg set pro_no = null where pro_no = #{pro_no}
+    </update>
+
+    <!--  根据place_no 删除 pro_no  -->
+    <update id="removePro_noByPlace_no" parameterType="List">
+        update place_msg set pro_no = null where place_no in
+        <foreach collection="place_nos" item="place_no" open="(" separator="," close=")">
+            #{place_no}
+        </foreach>
+    </update>
+
+    <!--  根据pro_no 找到 place_nos    -->
+    <select id="selectPlace_nosByPro_no" parameterType="Integer" resultType="Integer">
+        select place_no from place_msg where pro_no = #{pro_no}
+    </select>
+
+    <!--  找出没有流程的场地  -->
+    <select id="selectPlacesWithoutProcedure" resultType="Place">
+        select * from place_msg where pro_no is null
+    </select>
+</mapper>

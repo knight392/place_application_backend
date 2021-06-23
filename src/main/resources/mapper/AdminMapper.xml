@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.AdminDao">
+    <!-- 根据传入的 pro_no 查找管理员 -->
+    <select id="selectAdminByNo" parameterType="String" resultType="Admin">
+        select * from admin where admin_no = #{admin_no}
+    </select>
+
+    <!--  更新管理员信息  -->
+    <update id="updateAdmin" parameterType="Admin">
+        update admin
+        <set>
+            <if test="admin_name != null and admin_name != ''">
+                admin_name = #{admin_name},
+            </if>
+            <if test="admin_password != null and admin_password != ''">
+                admin_password = #{admin_password},
+            </if>
+        </set>
+        where admin_no = #{admin_no}
+    </update>
+
+    <!--  添加管理员  -->
+    <insert id="insertAdmin" parameterType="Admin">
+        insert into admin(admin_no,admin_name,admin_password) values(#{admin_no},#{admin_name},#{admin_password})
+    </insert>
+
+    <!--  删除管理员  -->
+    <delete id="deleteAdmin" parameterType="String">
+        delete from admin where admin_no = #{admin_no}
+    </delete>
+</mapper>

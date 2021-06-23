@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.PlaceApplicationDao">
+<!--  添加申请表  -->
+    <insert id="insertPlaceApplication" parameterType="PlaceApplication">
+        insert into place_application(place_no,pro_no,s_no,cur_status,cur_step,s_phone,tutor_name,org_name,begin_time,end_time, purpose, apl_date)
+        values(#{place.place_no},#{aplProcedure.pro_no},#{student.s_no},#{cur_status},#{cur_step},#{s_phone},#{tutor_name},#{org_name},#{begin_time},#{end_time}, #{purpose}, #{apl_date})
+    </insert>
+
+<!--  查询申请表  -->
+    <select id="selectPlaceApplicationByNo" parameterType="Integer" resultMap="placeApplicationWithStudentAndAplProcedure">
+        select pa.*, s.s_name, ap.pro_form_name, p.place_name from place_application pa, student s, apl_procedure ap, place_msg p
+        where pa.s_no = s.s_no and pa.pro_no = ap.pro_no and pa.place_no = p.place_no and pa.apl_no = #{apl_no}
+    </select>
+    <resultMap id="placeApplicationWithStudentAndAplProcedure" type="PlaceApplication">
+        <id property="apl_no" column="apl_no"></id>
+        <result property="org_name" column="org_name"></result>
+        <result property="tutor_name" column="tutor_name"></result>
+        <result property="s_phone" column="s_phone"></result>
+        <result property="begin_time" column="begin_time"></result>
+        <result property="end_time" column="end_time"></result>
+        <result property="cur_step" column="cur_step"></result>
+        <result property="cur_status" column="cur_status"></result>
+        <result property="purpose" column="purpose"></result>
+        <result property="apl_date" column="apl_date"></result>
+        <association property="student" column="s_no" javaType="Student">
+            <id property="s_no" column="s_no"></id>
+            <result property="s_name" column="s_name"></result>
+        </association>
+        <association property="aplProcedure" column="pro_no" javaType="AplProcedure">
+            <id property="pro_no" column="pro_no"></id>
+            <result property="pro_form_name" column="pro_form_name"></result>
+        </association>
+        <association property="place" column="place_no" javaType="Place">
+            <id property="place_no" column="place_no"></id>
+            <result property="place_name" column="place_name"></result>
+        </association>
+    </resultMap>
+<!--  修改申请表  -->
+    <update id="updatePlaceApplication" parameterType="PlaceApplication">
+        update place_application
+        <set>
+            <if test="cur_status != null">
+                cur_status = #{cur_status},
+            </if>
+            <if test="cur_step != null">
+                cur_step = #{cur_step},
+            </if>
+            <if test="place != null and place.place_no != null">
+                place_no = #{place.place_no},
+            </if>
+            <if test="s_phone != null and s_phone != ''">
+                s_phone = #{s_phone},
+            </if>
+            <if test="begin_time != null and begin_time != ''">
+                begin_time = #{begin_time},
+            </if>
+            <if test="end_time != null and end_time != ''">
+                end_time = #{end_time},
+            </if>
+            <if test="tutor_name != null and tutor_name != ''">
+                tutor_name = #{tutor_name},
+            </if>
+            <if test="org_name != null and org_name != ''">
+                org_name = #{org_name},
+            </if>
+            <if test="purpose != null and purpose != ''">
+                purpose = #{purpose},
+            </if>
+        </set>
+        where apl_no = #{apl_no}
+    </update>
+
+<!--  根据pro_no，将 pro_no 设置为空， 删除流程使用  -->
+    <update id="clearPro_noByPro_no" parameterType="Integer">
+        update place_application set pro_no = null where pro_no = #{pro_no}
+    </update>
+<!--  根据place_no，将 place_no 设置为空, 删除场地使用，或场地移出某申请流程时使用  -->
+    <update id="clearPlace_noByPlace_no" parameterType="Integer">
+        update place_application set place_no = null where place_no = #{place_no}
+    </update>
+
+    <!--  根据 place_no 查找申请表  -->
+    <select id="selectPlaceApplicationByPlace_no" parameterType="Integer" resultType="PlaceApplication">
+        select * from place_application where place_no = #{place_no}
+    </select>
+
+    <!--  根据 pro_no 查找申请表  -->
+    <select id="selectPlaceApplicationByPro_no" parameterType="Integer" resultType="PlaceApplication">
+        select * from place_application where pro_no = #{pro_no}
+    </select>
+
+    <!-- 根据 student_no 找到 所属的申请表，并且根据提交时间从最新的日期排列 -->
+    <select id="getApplicationsByS_no" resultMap="placeApplicationWithStudentAndAplProcedure">
+        select pa.*, s.s_no,s.s_name, ap.pro_form_name, p.place_name from place_application pa, student s, apl_procedure ap, place_msg p
+        where pa.s_no = s.s_no and pa.pro_no = ap.pro_no and pa.place_no = p.place_no and pa.s_no = #{s_no}
+        order by pa.apl_date desc
+    </select>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--审批过程记录表涉及的Sql操作：-->
+<!--1、增加审批过程记录-->
+<!--2、通过申请表的单号来查询这张申请表的审所有内容-->
+
+<!--、状态描述？xxx学生的申请表由yyy老师审批，审批状态是zzz,service层的操作-->
+<mapper namespace="dao.ProRecordDao">
+    <!-- 1、增加审批过程记录 -->
+    <insert id="insertProRecord" parameterType="ProRecord">
+        insert into pro_record(apl_no,status_time,status_type,status_info)values (#{apl_no},#{status_time},#{status_type},#{status_info})
+    </insert>
+    <!--2、通过申请表的单号来查询这张申请表的审所有内容-->
+    <select id="selectProRecord" parameterType="Integer" resultType="ProRecord">
+        select * from pro_record where apl_no = #{apl_no}
+    </select>
+
+</mapper>

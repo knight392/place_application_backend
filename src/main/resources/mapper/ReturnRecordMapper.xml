@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ReturnRecordDao">
+
+    <!--  添加补正打回，由审批的老师添加  -->
+    <insert id="insertReturnRecord" parameterType="ReturnRecord">
+        insert into return_record(return_no,apl_no,teacher_no,return_time,return_reason) values(#{return_no},#{apl_no},#{teacher_no},#{return_time},#{return_reason})
+    </insert>
+    <!-- 根据传入的 return_no 查找消息 -->
+    <select id="selectReturnRecordByNo" parameterType="Integer" resultType="ReturnRecord">
+        select * from return_record where return_no = #{return_no}
+    </select>
+</mapper>

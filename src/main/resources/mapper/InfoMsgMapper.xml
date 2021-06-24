@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.InfoMsgDao">
+    <!-- 根据传入的 info_no 查找消息 -->
+    <select id="selectInfoMsgByNo" parameterType="Integer" resultType="InfoMsg">
+        select * from info_msg where info_no = #{info_no}
+    </select>
+    <!--  添加消息通知，由审批的老师添加  -->
+    <insert id="insertInfoMsg" parameterType="InfoMsg">
+        insert into info_msg(info_no,info_content,s_no,info_time,is_read) values(#{info_no},#{info_content},#{s_no},#{info_time},#{is_read})
+    </insert>
+
+</mapper>

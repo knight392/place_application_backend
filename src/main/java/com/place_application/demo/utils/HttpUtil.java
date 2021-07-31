@@ -2,6 +2,8 @@ package com.place_application.demo.utils;
 
 
 
+import com.place_application.demo.config.JwtConfig;
+import io.jsonwebtoken.SignatureException;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -10,7 +12,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class HttpUtil {
@@ -20,6 +26,7 @@ public class HttpUtil {
      * @param url
      * @return
      */
+
     public static JSONObject doGetStr(String url) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
@@ -57,6 +64,26 @@ public class HttpUtil {
         }
         System.out.println(jsonObject);
         return jsonObject;
+    }
+
+    public static String getTokenFromCookie(JwtConfig jwtConfig,HttpServletRequest request) {
+        String token = "";
+
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            throw new SignatureException("token不能为空");
+        }
+        for (Cookie cookie: cookies
+        ) {
+            if(cookie.getName().equals("token")){
+                token = cookie.getValue();
+            }
+        }
+
+        if(StringUtils.isEmpty(token)){
+            throw new SignatureException(jwtConfig.getHeader()+ "不能为空");
+        }
+        return token;
     }
 
 

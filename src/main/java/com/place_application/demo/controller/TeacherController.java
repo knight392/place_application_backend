@@ -124,7 +124,7 @@ public class TeacherController {
     /**
      * 获取所有的教师
      */
-    @RequestMapping(value = "getAllTeachersServlet",method = RequestMethod.GET)
+    @RequestMapping(value = "/getAllTeachersServlet",method = RequestMethod.GET)
     @ResponseBody
     public Response<List<Teacher>> getAllTeachers() {
         Response response = new Response();

@@ -14,8 +14,9 @@ public interface AdminService {
     public boolean registerAdmin(Admin admin) throws Exception;
 
     /**
-     *
+     * 管理员使用 token 登录
      */
+    public Admin loginAdminWithToken(String token) throws Exception;
 
     /**
      * 删除管理员

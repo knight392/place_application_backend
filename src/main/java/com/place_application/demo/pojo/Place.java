@@ -8,7 +8,7 @@ public class Place {
     private String place_name; // 场地名称
     private String place_info; // 场地使用说明
     private AplProcedure aplProcedure; // 所属流程
-    private String image; // 图片路径
+    private Image image; // 图片路径
 
     public AplProcedure getAplProcedure() {
         return aplProcedure;
@@ -28,11 +28,11 @@ public class Place {
 
 
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 

@@ -17,7 +17,7 @@
                 pro_no = #{aplProcedure.pro_no},
             </if>
             <if test="image != null and image != ''">
-                image = #{image},
+                img_no = #{image.img_no},
             </if>
         </set>
         where place_no = #{place_no}
@@ -34,8 +34,10 @@
     </delete>
 
     <!--  查询场地  -->
-    <select id="selectPlaceByNoOrName" parameterType="Place" resultMap="placeWithAplProcedure">
-        select p.*, a.pro_name from place_msg p left join apl_procedure a on p.pro_no = a.pro_no
+    <select id="selectPlaceByNoOrName" parameterType="Place" resultMap="placeWithAplProcedureAndImage">
+        select p.*, a.pro_name from place_msg p
+            left join apl_procedure a on p.pro_no = a.pro_no
+            left join image on p.img_no = image.img_no
         <where>
             <choose>
                 <when test="place_no != null">
@@ -47,13 +49,18 @@
             </choose>
         </where>
     </select>
-    <resultMap id="placeWithAplProcedure" type="Place">
+    <resultMap id="placeWithAplProcedureAndImage" type="Place">
         <id property="place_no" column="place_no"></id>
         <result property="place_name" column="place_name"></result>
         <result property="place_info" column="place_info"></result>
         <association property="aplProcedure" column="pro_no">
             <id property="pro_no" column="pro_no"></id>
             <result property="pro_name" column="pro_name"></result>
+        </association>
+        <association property="Image" column="img_no">
+            <result property="path" column="path"></result>
+            <result property="height" column="height"></result>
+            <result property="width" column="width"></result>
         </association>
     </resultMap>
 

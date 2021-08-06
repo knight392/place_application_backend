@@ -27,11 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
         includePathLists.add("/addPlaceServlet");
         includePathLists.add("/deletePlaceServlet");
         includePathLists.add("/updatePlaceServlet");
-        includePathLists.add("/getAllPlacesServlet");
         includePathLists.add("/getPlacesWithoutProcedureServlet");
+
         includePathLists.add("/addPositionServlet");
         includePathLists.add("/deletePositionServlet");
-
         includePathLists.add("/updatePositionServlet");
         includePathLists.add("/getAllPositionsServlet");
         includePathLists.add("/deletePositionServlet");

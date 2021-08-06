@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.place_application.demo.dao.ImageDao">
+    <!-- 根据传入的 type 查找Img -->
+    <select id="selectImagesByType" parameterType="String" resultType="Image">
+        select * from image where type = #{type}
+    </select>
+    <!--  添加Img  -->
+    <insert id="insertImage" parameterType="Image">
+        insert into image(path, type, height, width) values(#{path},#{type}, #{height}, #{width})
+    </insert>
+
+</mapper>

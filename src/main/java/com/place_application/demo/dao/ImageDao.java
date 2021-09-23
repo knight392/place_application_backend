@@ -1,10 +1,11 @@
 package com.place_application.demo.dao;
 
 import com.place_application.demo.pojo.Image;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-
+@Mapper
 public interface ImageDao {
     /**
      * 添加图片

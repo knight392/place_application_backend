@@ -80,31 +80,34 @@ public class AplProcedureServiceImpl implements AplProcedureService {
     public boolean updateAplProcedure(AplProcedure aplProcedure) {
         // 更新流程名和对应的申请表名
         int res = this.aplProcedureDao.updateAplProcedure(aplProcedure);
+
+        // 更新职位
+        this.updatePositions(aplProcedure.getPro_no(), aplProcedure.getPositions());
+
+        int available = aplProcedure.getPositions().size() > 0 ? 1 : 0;
+        // 最新的场地编号
         List<Integer> new_places = new ArrayList<>();
         for(Place place : aplProcedure.getPlaces()) {
             new_places.add(place.getPlace_no());
         }
         // 更新场地
-        this.updatePlaces(aplProcedure.getPro_no(), new_places);
-        // 更新职位
-        this.updatePositions(aplProcedure.getPro_no(), aplProcedure.getPositions());
+        this.updatePlaces(aplProcedure.getPro_no(), new_places, available);
+
         return res != 0;
     }
 
     @Override
-    public boolean updatePlaces(Integer pro_no, List<Integer> new_places) {
+    public boolean updatePlaces(Integer pro_no, List<Integer> new_places, int available) {
         List<Integer> old_places = this.placeDao.selectPlace_nosByPro_no(pro_no);
-        // 找到被移出的场地
+
+        // 找到被移出的场地,把这些场地设置为不可申请
         List<Integer> removed = new MySet().subtract(old_places,new_places);
         if (removed.size() != 0) {
             this.removePlacesFromProcedure(removed);
         }
-        // 找到新增的场地
-        List<Integer> added = new MySet().subtract(new_places, old_places);
-        if (added.size() != 0) {
-            this.addPlacesToProcedure(pro_no, added);
-        }
 
+        // 更新当前包含的场地的 pro_no 和 available
+        this.updatePlacesInProcedure(pro_no, new_places, available);
         return true;
     }
 
@@ -124,10 +127,11 @@ public class AplProcedureServiceImpl implements AplProcedureService {
     }
 
     @Override
-    public boolean addPlacesToProcedure(Integer pro_no, List<Integer> place_nos) {
+    public boolean updatePlacesInProcedure(Integer pro_no, List<Integer> place_nos, int available) {
         for (Integer place_no : place_nos) {
             Place place = new Place();
             place.setPlace_no(place_no);
+            place.setAvailable(available);
             AplProcedure aplProcedure = new AplProcedure();
             aplProcedure.setPro_no(pro_no);
             place.setAplProcedure(aplProcedure);

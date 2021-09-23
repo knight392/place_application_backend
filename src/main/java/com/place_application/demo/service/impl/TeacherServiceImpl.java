@@ -63,4 +63,13 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacherList;
     }
+
+    @Override
+    public List<Teacher> getTeachersInProcedure(String pro_no) {
+        List<Teacher> teacherList = this.teacherDao.getTeachersInProcedure(pro_no);
+        for(Teacher teacher : teacherList) {
+            teacher.setTeacher_password("");
+        }
+        return teacherList;
+    }
 }

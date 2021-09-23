@@ -9,6 +9,25 @@ public class Student {
     private String s_name; // 姓名
     private String s_password; // 密码
     private String s_dwmc; // 学院
+    private String s_avatar; // 头像
+    private String s_phone; // 手机号码
+
+    public String getS_avatar() {
+        return s_avatar;
+    }
+
+    public void setS_avatar(String s_avatar) {
+        this.s_avatar = s_avatar;
+    }
+
+    public String getS_phone() {
+        return s_phone;
+    }
+
+    public void setS_phone(String s_phone) {
+        this.s_phone = s_phone;
+    }
+
 
 
     public String getS_no() {
@@ -45,8 +64,13 @@ public class Student {
 
     @Override
     public String toString() {
-        return "student=[s_no=" + s_no + ", s_name=" + s_name + ", s_password=" + s_password + ", s_dwmc=" + s_dwmc + "]";
-     }
-
-
+        return "Student{" +
+                "s_no='" + s_no + '\'' +
+                ", s_name='" + s_name + '\'' +
+                ", s_password='" + s_password + '\'' +
+                ", s_dwmc='" + s_dwmc + '\'' +
+                ", s_avatar='" + s_avatar + '\'' +
+                ", s_phone='" + s_phone + '\'' +
+                '}';
+    }
 }

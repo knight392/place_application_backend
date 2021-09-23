@@ -55,4 +55,9 @@ public interface PlaceDao {
      * 找出没有流程的场地
      */
     public List<Place> selectPlacesWithoutProcedure();
+
+    /**
+     * 找出可申请的场地
+     */
+    public List<Place> selectPlacesAvailable();
 }

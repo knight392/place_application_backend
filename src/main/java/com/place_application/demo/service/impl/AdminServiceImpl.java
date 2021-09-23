@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
-    @Autowired
+    @Resource
     private AdminDao adminDao;
 
     @Resource

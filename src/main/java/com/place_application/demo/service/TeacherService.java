@@ -39,4 +39,12 @@ public interface TeacherService {
      * 获取所有的教师
      */
     public List<Teacher> getAllTeachers();
+
+
+    /**
+     * 获取在流程中的教师
+     * @param pro_no
+     * @return
+     */
+    public List<Teacher> getTeachersInProcedure(String pro_no);
 }

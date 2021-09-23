@@ -11,4 +11,21 @@
     <insert id="insertStudent" parameterType="Student">
         insert into student(s_no,s_name,s_password,s_dwmc) values(#{s_no},#{s_name},#{s_password},#{s_dwmc})
     </insert>
+<!--    修改头像或手机号码信息-->
+    <update id="updateStudent" parameterType="Student" >
+        update student
+        <set>
+            <if test="s_avatar != null and s_avatar !=''">
+                s_avatar = #{s_avatar}
+            </if>
+            <if test="s_phone != null and s_phone !=''">
+                s_phone = #{s_phone}
+            </if>
+        </set>
+        where s_no = #{s_no}
+    </update>
+
+
+
+
 </mapper>

@@ -145,6 +145,11 @@ public class PositionController {
         return response;
     }
 
+
+    /**
+     * 获取还没流程且有教师任职的职位
+     * @return
+     */
     @RequestMapping(value="/getPositionsWithoutProcedureServlet", method = RequestMethod.GET)
     @ResponseBody
     public Response<List<Position>> getPositionsWithoutProcedure() {

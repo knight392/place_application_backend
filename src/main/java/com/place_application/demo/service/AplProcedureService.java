@@ -47,7 +47,7 @@ public interface AplProcedureService {
      * @param place_nos 新修改的场地编码
      * @return
      */
-    public boolean updatePlaces(Integer pro_no, List<Integer> place_nos);
+    public boolean updatePlaces(Integer pro_no, List<Integer> place_nos, int available);
 
     /**
      * 修改流程中包含的职位数量以及步骤
@@ -58,9 +58,9 @@ public interface AplProcedureService {
     public boolean updatePositions(Integer pro_no, List<Position> positions);
 
     /**
-     * 添加场地到流程中
+     * 更新在流程中的场地
      */
-    boolean addPlacesToProcedure(Integer pro_no, List<Integer> place_nos);
+    boolean updatePlacesInProcedure(Integer pro_no, List<Integer> place_nos, int available);
 
     /**
      * 从流程中移出场地

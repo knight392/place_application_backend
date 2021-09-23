@@ -112,8 +112,8 @@
         where position_no = #{position_no}
     </update>
 
-    <!-- 获取流程为空的职位    -->
+    <!-- 获取流程为空且教师非空的职位    -->
     <select id="selectPositionsWithoutProcedure" resultType="Position">
-        select * from position_msg where pro_no is null
+        select * from position_msg where pro_no is null and teacher_no is not null
     </select>
 </mapper>

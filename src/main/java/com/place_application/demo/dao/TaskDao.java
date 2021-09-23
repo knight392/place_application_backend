@@ -2,10 +2,12 @@ package com.place_application.demo.dao;
 
 
 import com.place_application.demo.pojo.Task;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 任务审批持久层操作
  */
+@Mapper
 public interface TaskDao {
     /**
      * 添加审批任务

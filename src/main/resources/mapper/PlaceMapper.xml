@@ -19,6 +19,9 @@
             <if test="image != null and image != ''">
                 img_no = #{image.img_no},
             </if>
+            <if test="available != null">
+                available = #{available}
+            </if>
         </set>
         where place_no = #{place_no}
     </update>
@@ -35,7 +38,7 @@
 
     <!--  查询场地  -->
     <select id="selectPlaceByNoOrName" parameterType="Place" resultMap="placeWithAplProcedureAndImage">
-        select p.*, a.pro_name from place_msg p
+        select p.*, a.pro_name, image.path, image.type, image.width, image.height from place_msg p
             left join apl_procedure a on p.pro_no = a.pro_no
             left join image on p.img_no = image.img_no
         <where>
@@ -55,18 +58,29 @@
         <result property="place_info" column="place_info"></result>
         <association property="aplProcedure" column="pro_no">
             <id property="pro_no" column="pro_no"></id>
-            <result property="pro_name" column="pro_name"></result>
+            <result property="pro_form_name" column="pro_form_name"></result>
         </association>
-        <association property="Image" column="img_no">
+        <association property="image" column="img_no">
+            <id property="img_no" column="img_no"></id>
             <result property="path" column="path"></result>
+            <result property="type" column="type"></result>
             <result property="height" column="height"></result>
             <result property="width" column="width"></result>
         </association>
     </resultMap>
 
     <!--  查询所有的场地  -->
-    <select id="selectAllPlaces" resultMap="placeWithAplProcedure">
-        select p.*, a.pro_name from place_msg p left join apl_procedure a on p.pro_no = a.pro_no
+    <select id="selectAllPlaces" resultMap="placeWithAplProcedureAndImage">
+        select p.*, a.pro_form_name,  image.path, image.type, image.width, image.height from place_msg p
+            left join apl_procedure a on p.pro_no = a.pro_no
+            left join image on p.img_no = image.img_no
+    </select>
+
+    <select id="selectPlacesAvailable" resultMap="placeWithAplProcedureAndImage">
+        select p.*, a.pro_form_name,  image.path, image.type, image.width, image.height from place_msg p
+            left join apl_procedure a on p.pro_no = a.pro_no
+            left join image on p.img_no = image.img_no
+        where p.available = 1
     </select>
 
     <!-- 根据pro_no 清空 pro_no，批量清除流程中的所属场地 -->
@@ -74,9 +88,9 @@
         update place_msg set pro_no = null where pro_no = #{pro_no}
     </update>
 
-    <!--  根据place_no 删除 pro_no  -->
+    <!--  根据place_no 删除 pro_no, 将 available 设置 0, 不可申请 -->
     <update id="removePro_noByPlace_no" parameterType="List">
-        update place_msg set pro_no = null where place_no in
+        update place_msg set pro_no = null, available=0 where place_no in
         <foreach collection="place_nos" item="place_no" open="(" separator="," close=")">
             #{place_no}
         </foreach>

@@ -18,4 +18,9 @@ public interface StudentDao {
      * 添加学生
      */
     public int insertStudent(Student student);
+
+    /**
+     * 修改信息
+     */
+    public int updateStudent(Student student);
 }

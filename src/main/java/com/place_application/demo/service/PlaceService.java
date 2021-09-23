@@ -42,7 +42,13 @@ public interface PlaceService {
 
 
     /**
-     * 获取没有流程的长度
+     * 获取没有流程的场地
      */
     public List<Place> getPlacesWithoutProcedure();
+
+    /**
+     * 获取可申请的场地
+     */
+
+    public List<Place> getPlacesAvailable();
 }

@@ -37,6 +37,8 @@ public class StudentServiceImpl implements StudentService {
             newStu.setS_no(student.getS_no());
             newStu.setS_name(stuMap.get("userrealname").toString());
             newStu.setS_dwmc(stuMap.get("userdwmc").toString());
+
+
             // 判断该学生是否第一次登录
             Student stu = this.studentDao.selectStudentByNo(student.getS_no());
             if (stu == null) {
@@ -44,6 +46,9 @@ public class StudentServiceImpl implements StudentService {
                 newStu.setS_password(student.getS_password());
                 this.registerStudent(newStu);
                 newStu.setS_password("");
+            }else{
+                newStu.setS_avatar(stu.getS_avatar());
+                newStu.setS_phone(stu.getS_phone());
             }
             return newStu;
         }
@@ -70,5 +75,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student selectStudent(String s_no) {
         return this.studentDao.selectStudentByNo(s_no);
+    }
+
+    @Override
+    public boolean updateStudent(Student student) {
+        return this.studentDao.updateStudent(student) > 0;
     }
 }

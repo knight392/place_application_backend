@@ -45,4 +45,8 @@
     <select id="getAllTeachers" resultMap="TeacherWithPosition">
         select * from teacher t left join position_msg p on t.teacher_no = p.teacher_no
     </select>
+
+    <select id="getTeachersInProcedure" parameterType="String" resultType="Teacher">
+        select t.* from position_msg p, teacher t where p.teacher_no = t.teacher_no and p.pro_no = #{pro_no}
+    </select>
 </mapper>

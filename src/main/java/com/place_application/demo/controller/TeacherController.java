@@ -175,4 +175,33 @@ public class TeacherController {
         return response;
     }
 
+
+    /**
+     * 找到流程所安排的所有审批老师
+     */
+    @RequestMapping(value = "/getTeachersInProcedure",method = RequestMethod.GET)
+    @ResponseBody
+    public Response<List<Teacher>> getTeachersInProcedure(@RequestParam String pro_no){
+        Response response = new Response();
+        List<Teacher> teacherList = null;
+        try{
+            teacherList = this.teacherService.getTeachersInProcedure(pro_no);
+        }catch (Exception e){
+            System.out.println(e);
+            response.setStatus(Response.ERROR);
+            response.setInfo("教师信息获取异常");
+            return response;
+        }
+        if(teacherList.size() == 0){
+            response.setInfo("没有该流程或该流程没有教师");
+            response.setStatus(Response.ERROR);
+        }else{
+            response.setInfo("获取教师信息成功");
+            response.setStatus(Response.OK);
+        }
+        response.setData(teacherList);
+        return response;
+
+    }
+
 }

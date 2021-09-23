@@ -72,7 +72,7 @@ public class PlaceController {
     }
 
     /**
-     * 查看获取所有
+     * 查看获取所有场地
      */
     @RequestMapping(value = "/getAllPlacesServlet", method = RequestMethod.GET)
     @ResponseBody
@@ -165,6 +165,36 @@ public class PlaceController {
         List<Place> places = null;
         try{
             places = this.placeService.getPlacesWithoutProcedure();
+        }catch (Exception e) {
+            System.out.println(e);
+            response.setInfo("获取场地异常");
+            response.setStatus(Response.ERROR);
+            return response;
+        }
+        if (places != null){
+            response.setInfo("获取场地成功");
+            response.setStatus(Response.OK);
+        }
+        else{
+            response.setInfo("获取场地失败");
+            response.setStatus(Response.ERROR);
+        }
+
+        response.setData(places);
+        return response;
+    }
+
+    /**
+     * 查序可以被申请的场地
+     * available 为 1
+     */
+    @RequestMapping(value = "/getPlacesAvailableServlet",method = RequestMethod.GET)
+    @ResponseBody
+    public Response<List<Place>> getPlacesAvailable() {
+        Response response = new Response();
+        List<Place> places = null;
+        try{
+            places = this.placeService.getPlacesAvailable();
         }catch (Exception e) {
             System.out.println(e);
             response.setInfo("获取场地异常");

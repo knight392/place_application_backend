@@ -2,10 +2,12 @@ package com.place_application.demo.dao;
 
 
 import com.place_application.demo.pojo.InfoMsg;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 消息通知持久层操作
  */
+@Mapper
 public interface InfoMsgDao {
 
     /**

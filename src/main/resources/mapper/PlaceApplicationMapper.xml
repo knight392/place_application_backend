@@ -14,6 +14,7 @@
         select pa.*, s.s_name, ap.pro_form_name, p.place_name from place_application pa, student s, apl_procedure ap, place_msg p
         where pa.s_no = s.s_no and pa.pro_no = ap.pro_no and pa.place_no = p.place_no and pa.apl_no = #{apl_no}
     </select>
+
     <resultMap id="placeApplicationWithStudentAndAplProcedure" type="PlaceApplication">
         <id property="apl_no" column="apl_no"></id>
         <result property="org_name" column="org_name"></result>
@@ -28,6 +29,7 @@
         <association property="student" column="s_no" javaType="Student">
             <id property="s_no" column="s_no"></id>
             <result property="s_name" column="s_name"></result>
+            <result property="s_dwmc" column="s_dwmc"></result>
         </association>
         <association property="aplProcedure" column="pro_no" javaType="AplProcedure">
             <id property="pro_no" column="pro_no"></id>
@@ -36,6 +38,13 @@
         <association property="place" column="place_no" javaType="Place">
             <id property="place_no" column="place_no"></id>
             <result property="place_name" column="place_name"></result>
+            <association property="image" column="img_no">
+                <id property="img_no" column="img_no"></id>
+                <result property="path" column="path"></result>
+                <result property="type" column="type"></result>
+                <result property="height" column="height"></result>
+                <result property="width" column="width"></result>
+            </association>
         </association>
     </resultMap>
 <!--  修改申请表  -->
@@ -94,8 +103,9 @@
 
     <!-- 根据 student_no 找到 所属的申请表，并且根据提交时间从最新的日期排列 -->
     <select id="getApplicationsByS_no" resultMap="placeApplicationWithStudentAndAplProcedure">
-        select pa.*, s.s_no,s.s_name, ap.pro_form_name, p.place_name from place_application pa, student s, apl_procedure ap, place_msg p
-        where pa.s_no = s.s_no and pa.pro_no = ap.pro_no and pa.place_no = p.place_no and pa.s_no = #{s_no}
+        select pa.*, s.s_no,s.s_name, s.s_dwmc, ap.pro_form_name, p.place_name,img.* from place_application pa, student s, apl_procedure ap, place_msg p, image img
+        where pa.s_no = s.s_no and pa.pro_no = ap.pro_no and pa.place_no = p.place_no and p.img_no = img.img_no and pa.s_no = #{s_no}
         order by pa.apl_date desc
+
     </select>
 </mapper>

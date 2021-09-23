@@ -68,7 +68,7 @@ public interface PositionDao {
 
 
     /**
-     * 获取 没有流程的职位
+     * 获取 没有流程且有任职的职位
      */
     public List<Position> selectPositionsWithoutProcedure();
 }

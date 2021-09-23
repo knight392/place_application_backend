@@ -25,4 +25,9 @@ public interface StudentService {
     public Student selectStudent(String s_no);
 
 
+    /**
+     * 修改学生信息
+     */
+    public boolean updateStudent(Student student);
+
 }

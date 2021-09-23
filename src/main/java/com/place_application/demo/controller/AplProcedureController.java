@@ -1,5 +1,6 @@
 package com.place_application.demo.controller;
 
+import com.place_application.demo.pojo.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -154,4 +155,6 @@ public class AplProcedureController {
         response.setData(res);
         return response;
     }
+
+
 }

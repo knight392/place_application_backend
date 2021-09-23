@@ -42,4 +42,33 @@ public class StudentController {
         response.setData(student);
         return response;
     }
+
+    /**
+     * 修改学生信息 头像或手机号码
+     */
+    @RequestMapping(value = "/studentUpdateServlet",method = RequestMethod.POST)
+    @ResponseBody
+    public Response<Boolean> updateStudent(@RequestBody Student student){
+        Response response = new Response();
+        Boolean res = false;
+        student.toString();
+        System.out.println("更新");
+        try{
+            res = this.studentService.updateStudent(student);
+        }catch(Exception e) {
+            System.out.println(e);
+            response.setStatus(Response.ERROR);
+            response.setInfo("学生信息更新异常");
+            return response;
+        }
+        if (res) {
+            response.setStatus(Response.OK);
+            response.setInfo("学生信息修改成功");
+        }else{
+            response.setStatus(Response.ERROR);
+            response.setInfo("学生信息修改失败");
+        }
+        response.setData(res);
+        return response;
+    }
 }

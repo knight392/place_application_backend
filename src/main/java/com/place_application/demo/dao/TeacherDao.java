@@ -34,4 +34,10 @@ public interface TeacherDao {
      * 获取所有的教师
      */
     public List<Teacher> getAllTeachers();
+
+
+    /**
+     * 获取在某流程中的教师
+     */
+    public List<Teacher> getTeachersInProcedure(String pro_no);
 }

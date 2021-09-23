@@ -71,5 +71,8 @@ public class PlaceServiceImpl implements PlaceService {
         return this.placeDao.selectPlacesWithoutProcedure();
     }
 
-
+    @Override
+    public List<Place> getPlacesAvailable() {
+        return this.placeDao.selectPlacesAvailable();
+    }
 }

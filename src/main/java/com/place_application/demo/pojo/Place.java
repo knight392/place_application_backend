@@ -10,6 +10,29 @@ public class Place {
     private AplProcedure aplProcedure; // 所属流程
     private Image image; // 图片路径
 
+
+    private int available; // 是否可申请 1-可，0-不可
+    public int getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(int available) {
+        this.available = available;
+    }
+
+
+
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+
+
     public AplProcedure getAplProcedure() {
         return aplProcedure;
     }
@@ -28,13 +51,7 @@ public class Place {
 
 
 
-    public Image getImage() {
-        return image;
-    }
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
 
     public Integer getPlace_no() {
         return place_no;
@@ -53,7 +70,16 @@ public class Place {
     }
 
     @Override
-    public String toString(){
-        return "Place [ place_no=" + place_no + ", pro_name=" + place_name + ", place_info=" + place_info + ", aplProcedure=" + aplProcedure + "]";
-     }
+    public String toString() {
+        return "Place{" +
+                "place_no=" + place_no +
+                ", place_name='" + place_name + '\'' +
+                ", place_info='" + place_info + '\'' +
+                ", aplProcedure=" + aplProcedure +
+                ", image=" + image +
+                ", available=" + available +
+                '}';
+    }
+
+
 }

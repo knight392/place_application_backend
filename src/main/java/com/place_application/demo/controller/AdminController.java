@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 public class AdminController {
-    @Autowired
+    @Resource
     private AdminService adminService;
     @Resource
     private JwtConfig jwtConfig ;

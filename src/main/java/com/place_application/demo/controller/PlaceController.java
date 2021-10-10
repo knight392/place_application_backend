@@ -112,7 +112,7 @@ public class PlaceController {
         try {
             res = this.placeService.updatePlace(place);
         }catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             response.setInfo("更新场地信息异常");
             response.setStatus(Response.ERROR);
             return response;

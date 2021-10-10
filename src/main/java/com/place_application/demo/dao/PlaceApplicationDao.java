@@ -49,4 +49,34 @@ public interface PlaceApplicationDao {
      * 根据 student_no 找到 所属的申请表，并且根据提交时间从最新的日期排列
      */
     public List<PlaceApplication> getApplicationsByS_no(String s_no);
+
+    /**
+     * 获取申请表最大步骤
+     * @param apl_no
+     * @return
+     */
+    public int getMaxStepByNo(int apl_no);
+
+
+    /**
+     * 将 cur_step 置 0
+     * @param apl_no
+     * @return
+     */
+    public int resetStep(int apl_no);
+
+
+    /**
+     * 清空 refuse_reason
+     * @param apl_no
+     * @return
+     */
+    public int clearRefuseReason(int apl_no);
+
+    /**
+     * 根据 pro_no 获取正在申请的申请表
+     * @param pro_no
+     * @return
+     */
+    public List<Integer> selectPlaceApplicationsByPro_no(int pro_no);
 }

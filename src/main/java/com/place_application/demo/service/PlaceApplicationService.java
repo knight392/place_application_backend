@@ -1,6 +1,7 @@
 package com.place_application.demo.service;
 
 
+import com.place_application.demo.pojo.Place;
 import com.place_application.demo.pojo.PlaceApplication;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +23,26 @@ public interface PlaceApplicationService {
     public boolean updatePlaceApplication(PlaceApplication placeApplication);
 
     /**
-     * 查询申请表
+     * 根据 pro_no 获取正在申请中的申请表
+     * @param pro_no
+     * @return
      */
-    public PlaceApplication selectPlaceApplication(Integer apl_no);
+    public List<Integer> getApplicationsByPro_no(int pro_no);
 
     /**
      * 申请完成
      */
-    public boolean finishApplication(Integer apl_no);
+    public boolean finishApplication(Integer apl_no) throws Exception;
 
     /**
      * 申请打回
      */
-    public boolean returnApplication(Integer apl_no);
+    public boolean rewriteApplication(Integer apl_no, String reason);
 
     /**
      * 申请拒绝
      */
-    public boolean refuseApplication(Integer apl_no);
+    public boolean refuseApplication(Integer apl_no, String reason);
 
     /**
      * 中断申请
@@ -61,4 +64,11 @@ public interface PlaceApplicationService {
      * 根据学生学号找到所属的所有的申请表
      */
     public List<PlaceApplication> getApplicationsByStudent_no(String student_no);
+
+    /**
+     * 拷贝申请表
+     * @param apl_no
+     * @return
+     */
+    public Integer copyApplication(Integer apl_no);
 }

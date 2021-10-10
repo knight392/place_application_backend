@@ -1,6 +1,7 @@
 package com.place_application.demo.config;
 
 import com.place_application.demo.interceptor.AdminInterceptor;
+import com.place_application.demo.interceptor.TeacherInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,12 +18,14 @@ public class WebConfig implements WebMvcConfigurer {
 
         includePathLists.add("/adminLoginWithTokenServlet");
         includePathLists.add("/adminUpdateServlet");
+        includePathLists.add("/logoffAdminServlet");
 
         includePathLists.add("/getAllAplProceduresServlet");
         includePathLists.add("/addAplProcedureServlet");
         includePathLists.add("/updateAplProcedureServlet");
         includePathLists.add("/deleteAplProcedureServlet");
         includePathLists.add("/sentenceAplProcedureDuplicateServlet");
+        includePathLists.add("/getApplicationsIngNumberServlet");
 
         includePathLists.add("/addPlaceServlet");
         includePathLists.add("/deletePlaceServlet");
@@ -40,11 +43,18 @@ public class WebConfig implements WebMvcConfigurer {
 
         includePathLists.add("/sentenceTeacherDuplicateServlet");
         includePathLists.add("/registerTeacherServlet");
-        includePathLists.add("/loginTeacherServlet");
         includePathLists.add("/deleteTeacherServlet");
         includePathLists.add("/getAllTeachersServlet");
         includePathLists.add("/updateTeacherServlet");
 
         registry.addInterceptor(new AdminInterceptor()).addPathPatterns(includePathLists);
+
+        // 管理员端拦截，只有登录了才能访问以下接口
+
+        List<String> includePathListsTeacher = new ArrayList<>();
+        includePathListsTeacher.add("/loginTeacherWithTokenServlet");
+        includePathListsTeacher.add("/logoffTeacherServlet");
+
+        registry.addInterceptor(new TeacherInterceptor()).addPathPatterns(includePathListsTeacher);
     }
 }

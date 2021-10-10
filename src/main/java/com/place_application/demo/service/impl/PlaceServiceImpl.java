@@ -2,6 +2,7 @@ package com.place_application.demo.service.impl;
 
 import com.place_application.demo.dao.PlaceApplicationDao;
 import com.place_application.demo.dao.PlaceDao;
+import com.place_application.demo.pojo.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,16 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public Place addPlace(Place place) {
-       int res = this.placeDao.insertPlace(place);
+
+       int res = 0;
+       // 添加默认图
+       if(place.getImage() == null || place.getImage().getImg_no() == 0){
+           Image image = new Image();
+           image.setImg_no(Image.IMG_NO);
+           place.setImage(image);
+       }
+       res = this.placeDao.insertPlaceWithPicture(place);
+
        if (res > 0) {
            place = this.placeDao.selectPlaceByNoOrName(place);
            return place;
@@ -34,17 +44,31 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public boolean updatePlace(Place place) {
-        int res = this.placeDao.updatePlace(place);
-        return res > 0;
+        // 判断是否有可被申请，不可被申请才能修改
+        int available = this.placeDao.getAvailableByPlace_no(place.getPlace_no());
+        if(available == 0){
+            // 添加默认图片
+            if(place.getImage() == null || place.getImage().getImg_no() == 0){
+                Image image = new Image();
+                image.setImg_no(Image.IMG_NO);
+                place.setImage(image);
+            }
+            int res = this.placeDao.updatePlace(place);
+
+            return res > 0;
+        }
+        return false;
     }
 
     @Override
     public boolean deletePlace(Integer place_no) {
-        // 中断流程
-
-
-        int res = this.placeDao.deletePlace(place_no);
-        return res > 0;
+        // 判断是否有被添加到流程中
+        Integer pro_no = this.placeDao.getPro_noByPlace_no(place_no);
+        if(pro_no == null){
+            int res = this.placeDao.deletePlace(place_no);
+            return res > 0;
+        }
+        return false;
     }
 
     @Override

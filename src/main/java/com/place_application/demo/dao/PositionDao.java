@@ -71,4 +71,25 @@ public interface PositionDao {
      * 获取 没有流程且有任职的职位
      */
     public List<Position> selectPositionsWithoutProcedure();
+
+    /**
+     * 根据teacher_no 找职位
+     * @param teacher_no
+     * @return
+     */
+    public List<Position> selectPositionsByTeacher_no(String teacher_no);
+
+    /**
+     * 判断职位是否有流程
+     * @param position_no
+     * @return
+     */
+    public Integer getPro_noByPosition_no(int position_no);
+
+    /**
+     * 判断职位是否有教师
+     * @param position_no
+     * @return
+     */
+    public String getTeacher_noByPosition_no(int position_no);
 }

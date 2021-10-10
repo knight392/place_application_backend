@@ -8,7 +8,7 @@
         select * from image where type = #{type}
     </select>
     <!--  添加Img  -->
-    <insert id="insertImage" parameterType="Image">
+    <insert id="insertImage" parameterType="Image" useGeneratedKeys="true" keyProperty="img_no">
         insert into image(path, type, height, width) values(#{path},#{type}, #{height}, #{width})
     </insert>
 

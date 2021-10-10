@@ -75,9 +75,9 @@
     </select>
 
     <!--  根据pro_no 查询所有的职位，并且按照pro_order从小到大排列  -->
-    <select id = "selectPositionsByPro_no" resultType="Integer" resultMap="PositionWithTeacherAndProcedure">
-        select distinct * from (select p.*, t.teacher_name from position_msg p left join teacher t on p.teacher_no=t.teacher_no) as t1, (select a.pro_name from position_msg p left join apl_procedure a on p.pro_no = a.pro_no) as t2
-        where t1.pro_no = #{pro_no} order by pro_order asc
+    <select id = "selectPositionsByPro_no" parameterType="Integer" resultType="Position">
+        select * from position_msg
+        where pro_no = #{pro_no} order by pro_order asc
     </select>
 
     <!-- 根据pro_no 清空 pro_no，批量清除流程中的所属场地  -->
@@ -115,5 +115,19 @@
     <!-- 获取流程为空且教师非空的职位    -->
     <select id="selectPositionsWithoutProcedure" resultType="Position">
         select * from position_msg where pro_no is null and teacher_no is not null
+    </select>
+
+<!--  根据 teacher_no 找职位  -->
+    <select id="selectPositionsByTeacher_no" resultType="Position">
+        select * from position_msg where teacher_no = #{teacher_no}
+    </select>
+
+<!--根据 position_no 找 pro_no, 判断职位有没有被添加到流程中-->
+    <select id="getPro_noByPosition_no" parameterType="Integer" resultType="Integer">
+        select pro_no from position_msg where position_no = #{position_no}
+    </select>
+
+    <select id="getTeacher_noByPosition_no" parameterType="Integer" resultType="String">
+        select teacher_no from position_msg where position_no = #{position_no}
     </select>
 </mapper>

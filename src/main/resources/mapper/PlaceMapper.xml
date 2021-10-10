@@ -13,10 +13,10 @@
             <if test="place_info != null and place_info != ''">
                 place_info = #{place_info},
             </if>
-            <if test="aplProcedure != null and  aplProcedure.pro_no != null and aplProcedure.pro_no != ''">
+            <if test="aplProcedure != null and  aplProcedure.pro_no != null and aplProcedure.pro_no != 0">
                 pro_no = #{aplProcedure.pro_no},
             </if>
-            <if test="image != null and image != ''">
+            <if test="image != null and image.img_no != 0">
                 img_no = #{image.img_no},
             </if>
             <if test="available != null">
@@ -26,10 +26,21 @@
         where place_no = #{place_no}
     </update>
 
+    <!--  删除场地中的图片  -->
+    <update id="removeImage" parameterType="Integer">
+        update place_msg set img_no = null where place_no = #{place_no}
+    </update>
+
     <!--  添加场地  -->
     <insert id="insertPlace" parameterType="Place">
         insert into place_msg(place_name, place_info) values(#{place_name}, #{place_info})
     </insert>
+
+    <!--  添加带图片场地   -->
+    <insert id="insertPlaceWithPicture" parameterType="Place">
+        insert into place_msg(place_name, place_info, img_no) values(#{place_name}, #{place_info}, #{image.img_no})
+    </insert>
+
 
     <!--  删除场地  -->
     <delete id="deletePlace" parameterType="Integer">
@@ -56,8 +67,10 @@
         <id property="place_no" column="place_no"></id>
         <result property="place_name" column="place_name"></result>
         <result property="place_info" column="place_info"></result>
+        <result property="available" column="available"></result>
         <association property="aplProcedure" column="pro_no">
             <id property="pro_no" column="pro_no"></id>
+            <result property="pro_name" column="pro_name"></result>
             <result property="pro_form_name" column="pro_form_name"></result>
         </association>
         <association property="image" column="img_no">
@@ -71,13 +84,13 @@
 
     <!--  查询所有的场地  -->
     <select id="selectAllPlaces" resultMap="placeWithAplProcedureAndImage">
-        select p.*, a.pro_form_name,  image.path, image.type, image.width, image.height from place_msg p
+        select p.*, a.pro_form_name, a.pro_name,  image.path, image.type, image.width, image.height from place_msg p
             left join apl_procedure a on p.pro_no = a.pro_no
             left join image on p.img_no = image.img_no
     </select>
 
     <select id="selectPlacesAvailable" resultMap="placeWithAplProcedureAndImage">
-        select p.*, a.pro_form_name,  image.path, image.type, image.width, image.height from place_msg p
+        select p.*, a.pro_form_name, a.pro_name,  image.path, image.type, image.width, image.height from place_msg p
             left join apl_procedure a on p.pro_no = a.pro_no
             left join image on p.img_no = image.img_no
         where p.available = 1
@@ -104,5 +117,16 @@
     <!--  找出没有流程的场地  -->
     <select id="selectPlacesWithoutProcedure" resultType="Place">
         select * from place_msg where pro_no is null
+    </select>
+
+    <!--  根据 place_no 找 pro_no，判断场地是否有流程  -->
+    <select id="getPro_noByPlace_no" parameterType="Integer" resultType="Integer">
+        select pro_no from place_msg where place_no = #{place_no}
+    </select>
+
+<!--    获取场地的可申请性-->
+    <select id="getAvailableByPlace_no" parameterType="Integer" resultType="Integer">
+        select available
+        from place_msg where  place_no = #{place_no};
     </select>
 </mapper>

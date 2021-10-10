@@ -84,7 +84,7 @@ public class AplProcedureController {
         try {
             res = this.aplProcedureService.updateAplProcedure(aplProcedure);
         }catch(Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             response.setStatus(Response.ERROR);
             response.setInfo("更新流程异常");
             return response;
@@ -112,7 +112,7 @@ public class AplProcedureController {
         try {
             res = this.aplProcedureService.deleteAplProcedure(pro_no);
         }catch(Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             response.setStatus(Response.ERROR);
             response.setInfo("删除流程异常");
             return response;

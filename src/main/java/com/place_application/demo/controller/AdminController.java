@@ -75,10 +75,29 @@ public class AdminController {
             System.out.println(token);
             Cookie cookie = new Cookie("token",token);
             res.addCookie(cookie);
+
             response.setStatus(Response.OK);
         }
 
         response.setData(adminRes);
+        return response;
+    }
+
+    /**
+     * 管理员退出登录
+     * @param res
+     * @return
+     */
+    @RequestMapping(value = "logoffAdminServlet", method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Boolean> logoffAdmin(HttpServletResponse res){
+        Response response = new Response();
+        Cookie cookie = new Cookie("token","");
+        cookie.setMaxAge(0);
+        res.addCookie(cookie);
+        response.setInfo("退出登录成功");
+        response.setData(true);
+        response.setStatus(200);
         return response;
     }
 

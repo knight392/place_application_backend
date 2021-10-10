@@ -7,6 +7,7 @@ public class Image {
     private String type;
     private int width;
     private int height;
+    public static final int IMG_NO = 53; // 默认场地图片编号
 
     public int getWidth() {
         return width;

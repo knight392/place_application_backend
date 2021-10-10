@@ -55,4 +55,11 @@ public interface PositionService {
      */
     public List<Position> selectPositionsWithoutProcedure() throws Exception;
 
+    /**
+     * 根据教师账号找职位
+     * @param teacher_no
+     * @return
+     */
+    public List<Position> findPositionsByTeacher_no(String teacher_no);
+
 }

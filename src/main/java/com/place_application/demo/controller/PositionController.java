@@ -80,7 +80,7 @@ public class PositionController {
         try{
             res = this.positionService.updatePosition(position);
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             response.setStatus(Response.ERROR);
             response.setInfo("更新职位信息异常");
             return response;

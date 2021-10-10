@@ -2,12 +2,85 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="dao.TaskDao">
+<mapper namespace="com.place_application.demo.dao.TaskDao">
     <!-- 1、增加审批任务 -->
     <insert id="insertTask" parameterType="Task">
-        insert into task(task_no,is_finished,apl_no,teacher_no,generate_time)values (#{task_no},#{is_finished},#{apl_no},#{teacher_no},#{generate_time})    </insert>
-    <!--2、通过审批任务表的单号来查询这张表的所有内容-->
-    <select id="selectTask" parameterType="Integer" resultType="Task">
-        select * from task where task_no = #{task_no}
+        insert into task(is_finished,apl_no,teacher_no,generate_time, is_resentence)values (#{is_finished},#{placeApplication.apl_no},#{teacher_no},#{generate_time}, #{is_reSentence})    </insert>
+
+
+
+    <!--  2、通过 teacher_no 找到 所有待审批任务  -->
+    <select id="selectTodoTasks" parameterType="String" resultMap="TasksWidthApplication">
+        select *
+        from task where teacher_no = #{teacher_no} and is_finished = 0 order by generate_time desc;
     </select>
+
+<!--  3、通过 teacher_no 找到所有已审批任务  -->
+    <select id="selectFinishedTasks" parameterType="String" resultMap="TasksWidthApplication">
+        select *
+        from task where teacher_no = #{teacher_no} and is_finished != 0 order by finished_time desc;;
+    </select>
+
+
+<!--    4. 更新任务-->
+    <update id="updateTask" parameterType="Task">
+        update task
+        <set>
+            <if test="is_finished != null">is_finished = #{is_finished},</if>
+            <if test="finished_time != null">finished_time = #{finished_time},</if>
+            <if test="refuse_reason != null">refuse_reason = #{refuse_reason},</if>
+        </set>
+        where task_no = #{task_no}
+    </update>
+
+<!--    5. 找 apl_no -->
+    <select id="getApl_noByTask_no">
+        select apl_no
+        from task where task_no = #{task_no};
+    </select>
+
+<!--    根据 task_no 查找 task -->
+    <select id="selectTaskByNo" resultMap="TasksWidthApplication">
+        select *
+        from task where task_no = #{task_no};
+    </select>
+
+<!--    获取教师名-->
+    <select id="getTeacherNameByNo" parameterType="Integer" resultType="String">
+        select teacher_name from task, teacher where task.teacher_no = teacher.teacher_no and task_no = #{task_no}
+    </select>
+
+<!--    找 task_nos-->
+    <select id="getTaskNosByAplNo" parameterType="Integer" resultType="Integer">
+        select task_no
+        from task where apl_no = #{apl_no};
+    </select>
+
+<!--    批量修改 apl_no-->
+    <update id="alterApl_nos" parameterType="TaskAlterAplAssist">
+        update task set apl_no = #{apl_no}
+        where task_no in
+        <foreach item="task_no" index="index" collection="task_nos" open="(" close=")" separator=",">
+            #{task_no}
+        </foreach>
+</update>
+
+    <resultMap id="TasksWidthApplication" type="Task">
+        <id property="task_no" column="task_no"></id>
+        <result property="is_finished" column="is_finished"></result>
+        <result property="teacher_no" column="teacher_no"></result>
+        <result property="generate_time" column="generate_time"></result>
+        <result property="finished_time" column="finished_time"></result>
+        <result property="is_reSentence" column="is_resentence"></result>
+        <result property="refuse_reason" column="refuse_reason"></result>
+        <!--   嵌套查询     -->
+        <association property="placeApplication" column="apl_no" javaType="PlaceApplication"
+                     select="com.place_application.demo.dao.PlaceApplicationDao.selectPlaceApplicationByNo">
+        </association>
+    </resultMap>
+
+    <update id="breakOffTask" parameterType="Task">
+        update task set is_finished = 4, finished_time = #{finished_time} where is_finished = 0 and apl_no = #{placeApplication.apl_no}
+    </update>
+
 </mapper>

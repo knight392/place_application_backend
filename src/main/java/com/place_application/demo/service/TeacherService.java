@@ -21,6 +21,13 @@ public interface TeacherService {
     public Teacher loginTeacher(Teacher teacher);
 
     /**
+     * 使用 token 教师登录
+     * @param token
+     * @return
+     */
+    public Teacher loginTeacherWithToken(String token);
+
+    /**
      * 教师修改信息
      */
     public boolean updateTeacher(Teacher teacher);
@@ -47,4 +54,12 @@ public interface TeacherService {
      * @return
      */
     public List<Teacher> getTeachersInProcedure(String pro_no);
+
+    /**
+     * 获取在流程中的第 k个教师
+     * @param pro_no
+     * @param order
+     * @return
+     */
+    public Teacher getTeacherInProcedure(int pro_no, int order);
 }

@@ -30,31 +30,33 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public boolean deletePosition(Integer position_no) {
-        // 根据position_no,找出pro_order 大的 并 pro_no相同的 记录
-        List<Integer> position_nos = this.positionDao.selectPositionsByNoAndPro_noAndPro_order(position_no);
-        // 将 order - 1
-        if(position_nos.size() != 0){
-            this.positionDao.reduceOrderByNos(position_nos);
-        }
-
         // 如果有关系到某个流程，则中断申请表
-
-        int res = this.positionDao.deletePosition(position_no);
-        return res > 0;
+        Integer pro_no = this.positionDao.getPro_noByPosition_no(position_no);
+        String teacher_no = this.positionDao.getTeacher_noByPosition_no(position_no);
+        System.out.println(pro_no);
+        if(pro_no == null && teacher_no == null){
+            int res = this.positionDao.deletePosition(position_no);
+            return res > 0;
+        }else{
+            return false;
+        }
     }
 
 
     @Override
     public boolean updatePosition(Position position)  {
-        // 如果移出了老师，则中断申请表
+        // 如果判断是否有流程，有则不能往下操作
+        Integer pro_no = this.positionDao.getPro_noByPosition_no(position.getPosition_no());
+        if(pro_no != null){
+            return false;
+        }
+
         if(position.getTeacher() == null) {
             this.positionDao.clearTeacherByNo(position.getPosition_no());
         }
         int res = this.positionDao.updatePosition(position);
         return res > 0;
     }
-
-
 
     @Override
     public List<Position> selectAllPositions() {
@@ -90,5 +92,10 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public List<Position> selectPositionsWithoutProcedure() throws Exception {
         return this.positionDao.selectPositionsWithoutProcedure();
+    }
+
+    @Override
+    public List<Position> findPositionsByTeacher_no(String teacher_no) {
+        return this.positionDao.selectPositionsByTeacher_no(teacher_no);
     }
 }

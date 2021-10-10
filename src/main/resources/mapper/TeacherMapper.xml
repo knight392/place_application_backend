@@ -46,7 +46,15 @@
         select * from teacher t left join position_msg p on t.teacher_no = p.teacher_no
     </select>
 
+<!--  获取在流程中的所有教师  -->
     <select id="getTeachersInProcedure" parameterType="String" resultType="Teacher">
         select t.* from position_msg p, teacher t where p.teacher_no = t.teacher_no and p.pro_no = #{pro_no}
     </select>
+
+<!--   获取在流程中的次序为order的教师 -->
+    <select id="getTeacherInProcedure" parameterType="TeacherQueryAssist" resultType="Teacher">
+        select t.teacher_no from position_msg p, teacher t where p.teacher_no = t.teacher_no and p.pro_no = #{pro_no} and p.pro_order = #{order}
+    </select>
+
+
 </mapper>

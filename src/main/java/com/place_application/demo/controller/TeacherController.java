@@ -1,5 +1,8 @@
 package com.place_application.demo.controller;
 
+import com.place_application.demo.config.JwtConfig;
+import com.place_application.demo.pojo.Admin;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +10,9 @@ import com.place_application.demo.pojo.Response;
 import com.place_application.demo.pojo.Teacher;
 import com.place_application.demo.service.TeacherService;
 
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -16,6 +22,8 @@ import java.util.List;
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
+    @Resource
+    private JwtConfig jwtConfig ;
     /**
      * 判断教师账号名是否重复
      */
@@ -72,7 +80,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "/loginTeacherServlet",method = RequestMethod.POST)
     @ResponseBody
-    public Response<Teacher> loginTeacher(@RequestBody Teacher teacher){
+    public Response<Teacher> loginTeacher(@RequestBody Teacher teacher, HttpServletResponse res){
         Response response = new Response();
         try{
             teacher = this.teacherService.loginTeacher(teacher);
@@ -86,13 +94,62 @@ public class TeacherController {
             response.setInfo("教师账号登录失败");
             response.setStatus(Response.ERROR);
         }else{
-            response.setInfo("教师账号登录成功");
+            // 设置 token
+            String token = jwtConfig.createToken(teacher.getTeacher_no()) ;
+            System.out.println(token);
+            Cookie cookie = new Cookie("token", token);
+            res.addCookie(cookie);
+            response.setInfo("登录成功");
             response.setStatus(Response.OK);
         }
         response.setData(teacher);
         return response;
     }
 
+
+    /**
+     * 教师使用 token 登录
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/loginTeacherWithTokenServlet", method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Teacher> loginTeacherWithToken(@CookieValue(value = "token") String token){
+        if(token == null || token == "") {
+            throw new SignatureException(jwtConfig.getHeader()+ "不能为空");
+        }
+        Response response = new Response();
+        Teacher teacher = this.teacherService.loginTeacherWithToken(token);
+        if(teacher == null){
+            response.setInfo("登录异常");
+            response.setStatus(Response.ERROR);
+        }
+        else{
+            response.setInfo("登录成功");
+            response.setStatus(Response.OK);
+        }
+        response.setData(teacher);
+        return response;
+    }
+
+
+    /**
+     * 教师退出登录
+     * @param res
+     * @return
+     */
+    @RequestMapping(value = "logoffTeacherServlet", method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Boolean> logoffTeacher(HttpServletResponse res){
+        Response response = new Response();
+        Cookie cookie = new Cookie("token","");
+        cookie.setMaxAge(0);
+        res.addCookie(cookie);
+        response.setInfo("退出登录成功");
+        response.setData(true);
+        response.setStatus(200);
+        return response;
+    }
 
     /**
      * 删除教师账号

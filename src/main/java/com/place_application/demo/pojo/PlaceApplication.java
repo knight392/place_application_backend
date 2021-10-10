@@ -10,7 +10,7 @@ public class PlaceApplication {
     private Place place; // 申请的场地
     private String purpose; // 申请目的
     private Student student; // 申请学生
-    private int cur_status; // 当前申请状态 1 - 申请中 2 – 通过 3 – 打回 4 – 失败
+    private int cur_status; // 当前申请状态 1 - 申请中，2 – 通过， 3 – 打回， 4 – 失败， 5 - 中断
     private int cur_step; // 当前在流程中的步骤 起始为1
     private String s_phone; // 联系电话
     private String tutor_name; // 导师姓名
@@ -18,6 +18,11 @@ public class PlaceApplication {
     private String begin_time; // 开始时间
     private String end_time; // 结束时间
     private String apl_date; // 申请日期
+    private int max_step; // 最大执行步骤，用来在生成审批任务设置任务类型是 初审 还是 再审
+    private int is_copy; // 是否是复制表，复制表用于打回申请表后 task 展示补正前的状态
+
+
+    private String refuse_reason; // 最新打回或拒绝理由，补正后清空
 
     public String getApl_date() {
         return apl_date;
@@ -123,10 +128,53 @@ public class PlaceApplication {
         this.end_time = end_time;
     }
 
-    public String toString() {
-        return "placeApplication [apl_no=" + apl_no + ", cur_step=" + cur_step + ", cur_status = " + cur_status + "purpose=" + purpose
-                + "org_name = " + org_name + ", begin_time" + begin_time + ", end_time = " + end_time + "student="  + student + ", apl_date = " + apl_date +
-                ", place =" + place + ", aplProcedure =" + aplProcedure + "]";
-
+    public int getMax_step() {
+        return max_step;
     }
+
+    public void setMax_step(int max_step) {
+        this.max_step = max_step;
+    }
+
+
+    public int getIs_copy() {
+        return is_copy;
+    }
+
+    public void setIs_copy(int is_copy) {
+        this.is_copy = is_copy;
+    }
+
+    public String getRefuse_reason() {
+        return refuse_reason;
+    }
+
+    public void setRefuse_reason(String refuse_reason) {
+        this.refuse_reason = refuse_reason;
+    }
+
+    @Override
+    public String toString() {
+        return "PlaceApplication{" +
+                "apl_no=" + apl_no +
+                ", aplProcedure=" + aplProcedure +
+                ", place=" + place +
+                ", purpose='" + purpose + '\'' +
+                ", student=" + student +
+                ", cur_status=" + cur_status +
+                ", cur_step=" + cur_step +
+                ", s_phone='" + s_phone + '\'' +
+                ", tutor_name='" + tutor_name + '\'' +
+                ", org_name='" + org_name + '\'' +
+                ", begin_time='" + begin_time + '\'' +
+                ", end_time='" + end_time + '\'' +
+                ", apl_date='" + apl_date + '\'' +
+                ", max_step=" + max_step +
+                ", is_copy=" + is_copy +
+                ", refuse_reason='" + refuse_reason + '\'' +
+                '}';
+    }
+
+
+
 }

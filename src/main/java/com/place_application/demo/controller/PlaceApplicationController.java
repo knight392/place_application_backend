@@ -44,13 +44,25 @@ public class PlaceApplicationController {
     }
 
     /**
-     * 查看申请表
+     * 获取在流程中审批中中申请表个数
      */
-
-
+    @RequestMapping(value = "/getApplicationsIngNumberServlet",method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Integer> getApplicationIng(@RequestParam Integer pro_no){
+        Response response = new Response();
+        try{
+            response.setData(this.placeApplicationService.getApplicationsByPro_no(pro_no).size());
+            response.setInfo("获取申请中申请表数量成功");
+            response.setStatus(Response.OK);
+        }catch (Exception e){
+            response.setInfo("获取申请中申请表异常");
+            response.setStatus(Response.ERROR);
+        }
+        return response;
+    }
 
     /**
-     * 补正申请表
+     * 补正申请表, 其实应该要重新生成新的申请表，原来的申请表，学生端不能再看到，只有教师审批任务能看到
      */
     @RequestMapping(value = "/updateApplicationServlet",method = RequestMethod.POST)
     @ResponseBody
@@ -60,7 +72,7 @@ public class PlaceApplicationController {
         try {
             res = this.placeApplicationService.updatePlaceApplication(placeApplication);
         }catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             response.setStatus(Response.ERROR);
             response.setInfo("补正申请表异常");
             return response;

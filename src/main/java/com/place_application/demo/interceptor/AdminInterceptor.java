@@ -24,7 +24,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("preHandle");
+
         /** Token 验证 */
         String token = HttpUtil.getTokenFromCookie(jwtConfig,request);
         Claims claims = null;

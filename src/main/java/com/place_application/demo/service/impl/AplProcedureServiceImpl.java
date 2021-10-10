@@ -3,6 +3,8 @@ package com.place_application.demo.service.impl;
 import com.place_application.demo.dao.AplProcedureDao;
 import com.place_application.demo.dao.PlaceDao;
 import com.place_application.demo.dao.PositionDao;
+import com.place_application.demo.service.PlaceApplicationService;
+import com.place_application.demo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,12 @@ public class AplProcedureServiceImpl implements AplProcedureService {
     @Autowired
     private PositionDao positionDao;
 
+    @Autowired
+    private PlaceApplicationService placeApplicationService;
+
+    @Autowired
+    private TaskService taskService;
+
     @Override
     public AplProcedure addAplProcedure(AplProcedure aplProcedure) {
        int res =  this.aplProcedureDao.insertAplProcedure(aplProcedure);
@@ -38,7 +46,19 @@ public class AplProcedureServiceImpl implements AplProcedureService {
 
     @Override
     public boolean deleteAplProcedure(Integer pro_no) {
-        // 中断申请表
+        // 查询是否有职位，有则拒绝删除
+        System.out.println(this.positionDao.selectPositionsByPro_no(pro_no).size());
+        if(this.positionDao.selectPositionsByPro_no(pro_no).size() != 0){
+            System.out.println("职位非空");
+            return false;
+        }
+        System.out.println(this.placeDao.selectPlace_nosByPro_no(pro_no).size());
+
+        // 查询是否有场地，有则拒绝删除
+        if(this.placeDao.selectPlace_nosByPro_no(pro_no).size() != 0) {
+            System.out.println("场地非空");
+            return false;
+        }
 
         int res = this.aplProcedureDao.deleteAplProcedure(pro_no);
         return res > 0;
@@ -76,8 +96,11 @@ public class AplProcedureServiceImpl implements AplProcedureService {
         return this.aplProcedureDao.selectAplProcedureByNoOrNameOrFormName(aplProcedure);
     }
 
+
+
     @Override
     public boolean updateAplProcedure(AplProcedure aplProcedure) {
+
         // 更新流程名和对应的申请表名
         int res = this.aplProcedureDao.updateAplProcedure(aplProcedure);
 
@@ -92,6 +115,16 @@ public class AplProcedureServiceImpl implements AplProcedureService {
         }
         // 更新场地
         this.updatePlaces(aplProcedure.getPro_no(), new_places, available);
+
+        // 查询申请中的申请表，并中断
+        List<Integer> aplList = this.placeApplicationService.getApplicationsByPro_no(aplProcedure.getPro_no());
+        for(Integer apl_no : aplList){
+            this.placeApplicationService.breakOffApplication(apl_no);
+        }
+        // 查找待审批的任务，并中断
+        if(aplList != null && aplList.size() != 0){
+            this.taskService.breakOffTasks(aplList);
+        }
 
         return res != 0;
     }
@@ -116,10 +149,12 @@ public class AplProcedureServiceImpl implements AplProcedureService {
         // 清除所属pro_no的职位中的pro_no 和 pro_order
         this.positionDao.clearPro_noAndPro_orderByPro_no(pro_no);
 
+        int order = 1;
         // 重新添加属于 pro_no的职位
         for(Position position : positions) {
             AplProcedure aplProcedure = new AplProcedure();
             aplProcedure.setPro_no(pro_no);
+            position.setPro_order(order ++);
             position.setAplProcedure(aplProcedure);
             this.positionDao.updatePosition(position);
         }

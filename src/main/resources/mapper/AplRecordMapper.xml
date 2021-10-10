@@ -8,14 +8,14 @@
 <!--2、通过申请表的单号来查询这张申请表的审所有内容-->
 
 <!--、状态描述？xxx学生的申请表由yyy老师审批，审批状态是zzz,service层的操作-->
-<mapper namespace="dao.ProRecordDao">
+<mapper namespace="com.place_application.demo.dao.AplRecordDao">
     <!-- 1、增加审批过程记录 -->
-    <insert id="insertProRecord" parameterType="ProRecord">
-        insert into pro_record(apl_no,status_time,status_type,status_info)values (#{apl_no},#{status_time},#{status_type},#{status_info})
+    <insert id="insertAplRecord" parameterType="AplRecord">
+        insert into apl_record(apl_no,status_time,status_info)values (#{apl_no},#{status_time},#{status_info})
     </insert>
-    <!--2、通过申请表的单号来查询这张申请表的审所有内容-->
-    <select id="selectProRecord" parameterType="Integer" resultType="ProRecord">
-        select * from pro_record where apl_no = #{apl_no}
+    <!--2、通过申请表的单号来查询这张申请表的审所有内容, 按照时间逆序排序-->
+    <select id="selectAplRecords" parameterType="Integer" resultType="AplRecord">
+        select * from apl_record where apl_no = #{apl_no} order by status_time desc
     </select>
 
 </mapper>

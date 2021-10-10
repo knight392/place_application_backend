@@ -16,9 +16,19 @@ public interface PlaceDao {
     public int insertPlace(Place place);
 
     /**
+     * 添加带图片场地
+     */
+    public int insertPlaceWithPicture(Place place);
+
+    /**
      * 删除场地
      */
     public int deletePlace(Integer place_no);
+
+    /**
+     * 删除图片
+     */
+    public int removeImage(Integer place_no);
 
     /**
      * 修改场地信息
@@ -60,4 +70,18 @@ public interface PlaceDao {
      * 找出可申请的场地
      */
     public List<Place> selectPlacesAvailable();
+
+    /**
+     * 判断场地是否有被添加到流程中
+     * @param place_no
+     * @return
+     */
+    public Integer getPro_noByPlace_no(Integer place_no);
+
+    /**
+     * 获取场地的可使用性
+     * @param place_no
+     * @return
+     */
+    public int getAvailableByPlace_no(Integer place_no);
 }

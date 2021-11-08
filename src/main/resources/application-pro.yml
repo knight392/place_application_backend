@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/place_application_dbs?characterEncoding=utf-8
+    username: root
+    password: yya063514
+
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host:redis:6379

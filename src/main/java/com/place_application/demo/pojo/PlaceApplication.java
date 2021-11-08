@@ -20,8 +20,6 @@ public class PlaceApplication {
     private String apl_date; // 申请日期
     private int max_step; // 最大执行步骤，用来在生成审批任务设置任务类型是 初审 还是 再审
     private int is_copy; // 是否是复制表，复制表用于打回申请表后 task 展示补正前的状态
-
-
     private String refuse_reason; // 最新打回或拒绝理由，补正后清空
 
     public String getApl_date() {

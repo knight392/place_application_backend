@@ -14,10 +14,8 @@ public class Task {
     private String teacher_no; //教师编号
     private String generate_time; //产生时间
     private Integer is_reSentence; // 是否 再审 0 否 1 是，教师两次以上审批同一个申请表
-
-
-
     private String refuse_reason; // 打回或拒绝理由
+    private String finished_time; // 完成时间
 
 
 
@@ -31,7 +29,6 @@ public class Task {
     }
 
 
-    private String finished_time; // 完成时间
 
 
 

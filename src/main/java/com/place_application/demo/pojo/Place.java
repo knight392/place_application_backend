@@ -9,8 +9,6 @@ public class Place {
     private String place_info; // 场地使用说明
     private AplProcedure aplProcedure; // 所属流程
     private Image image; // 图片路径
-
-
     private int available; // 是否可申请 1-可，0-不可
     public int getAvailable() {
         return available;
